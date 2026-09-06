@@ -1,0 +1,49 @@
+name: cd
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'terraform/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      # Workload Identity Federation — no long-lived service-account key.
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Authenticate docker to Artifact Registry
+        run: gcloud auth configure-docker "${{ vars.REGION }}-docker.pkg.dev"
+
+      - name: Build, push, and deploy both services
+        env:
+          PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          REGION: ${{ vars.REGION }}
+          REGISTRY: ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/caderno
+          GCS_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+          SHA: ${{ github.sha }}
+          # Cloud Run sessions are sticky, so live in-memory state (roster,
+          # versions) survives across HTTP probes without spinning new sockets.
+          CORS_ORIGIN: ${{ vars.WEB_URL }}
+        run: bash terraform/deploy.sh
