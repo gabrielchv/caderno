@@ -1,0 +1,20 @@
+{
+  "name": "caderno",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Real-time collaborative AI notebook — web-dev flagship: WebSockets, observability, perf/a11y, testing rigor.",
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm --filter @caderno/web lint",
+    "test": "pnpm -r test",
+    "e2e": "pnpm --filter @caderno/web test:e2e"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "unrs-resolver"]
+  }
+}

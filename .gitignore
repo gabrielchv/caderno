@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Builds
+.next/
+dist/
+out/
+build/
+*.tsbuildinfo
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Tests
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/crash.log
+
+# Lighthouse
+lhci_reports/
