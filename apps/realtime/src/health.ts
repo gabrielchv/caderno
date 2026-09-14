@@ -56,6 +56,8 @@ export function registerHealthRoutes(app: Express): void {
       res.status(400).json({ error: 'name:string and value:number required' })
       return
     }
+    // Counter.inc(label, value) adds the magnitude — a CLS of 0.31 sums as 0.31,
+    // not 1 — so rate() over this counter gives an average, not a count.
     metrics.webVitals.inc({ name }, value)
     res.status(204).end()
   })
