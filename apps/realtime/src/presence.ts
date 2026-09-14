@@ -25,9 +25,12 @@ export type IoClient = Socket<
   SocketData
 >
 
+// Room ids come straight from a URL segment, so cap them before they become a
+// Map key: an unbounded id lets a malicious URL bloat the in-memory room map.
 const MAX_ROOM_ID_LENGTH = 200
 
 export function roster(room: Room): PresenceUser[] {
+  // Stable join order so the avatar list does not jump around as people arrive.
   return [...room.users.values()].sort((a, b) => a.joinedAt - b.joinedAt)
 }
 
