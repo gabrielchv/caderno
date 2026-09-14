@@ -22,6 +22,14 @@ export function Room({ roomId }: { roomId: string }) {
     .filter((u) => u.clientId !== sync.myId && u.cursor !== null)
     .map((u) => ({ name: u.name, at: u.cursor as number }))
 
+  // Precedence for the footer line: active typing > a remote cursor > version.
+  const footerText =
+    typingNames.length > 0
+      ? `${typingNames.join(', ')} ${typingNames.length > 1 ? 'are' : 'is'} typing…`
+      : remoteCursors[0]
+        ? `${remoteCursors[0].name} is at character ${remoteCursors[0].at}`
+        : `Version ${sync.doc.version} · everyone is synced`
+
   return (
     <main className="mx-auto flex min-h-dvh max-w-6xl flex-col px-4 py-4 lg:px-6">
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-neutral-200 pb-3">
@@ -78,11 +86,7 @@ export function Room({ roomId }: { roomId: string }) {
             aria-live="polite"
             className="mt-2 min-h-6 text-sm text-neutral-500"
           >
-            {typingNames.length > 0
-              ? `${typingNames.join(', ')} ${typingNames.length > 1 ? 'are' : 'is'} typing…`
-              : remoteCursors.length > 0 && remoteCursors[0]
-                ? `${remoteCursors[0].name} is at character ${remoteCursors[0].at}`
-                : `Version ${sync.doc.version} · everyone is synced`}
+            {footerText}
           </footer>
         </section>
 
