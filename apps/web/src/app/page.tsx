@@ -7,6 +7,8 @@ export default function HomePage() {
   const router = useRouter()
   const [roomId, setRoomId] = useState('')
 
+  // Turn free text into a URL-safe room slug: lowercase, non-alphanumerics
+  // collapse to a single dash, edges trimmed, capped to a sane length.
   const slugify = (raw: string) =>
     raw
       .toLowerCase()
