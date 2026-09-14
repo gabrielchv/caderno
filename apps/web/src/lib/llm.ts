@@ -35,6 +35,7 @@ export async function* decodeSse(chunks: AsyncIterable<string>): AsyncGenerator<
       const line = buffer.slice(0, newlineIndex).replace(/\r$/, '')
       buffer = buffer.slice(newlineIndex + 1)
       if (line.startsWith('data:')) {
+        // 'data:' is 5 chars; a bare `data:` with nothing after it is a keepalive.
         const data = line.slice(5).trim()
         if (data === '[DONE]') return
         if (data) yield data
