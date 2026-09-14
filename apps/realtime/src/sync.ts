@@ -11,6 +11,9 @@ import type { IoClient, IoServer } from './presence'
  * broadcast to the room. Stale → reject with the authoritative doc, so the
  * client can resync. `applyPatch` lives in @caderno/shared and is the single
  * implementation of the rule — unit-tested there, exercised here.
+ *
+ * `_io` is unused by design (broadcasts go through `socket.to(roomId)`); the
+ * underscore documents that while keeping the register* signatures uniform.
  */
 export function registerSync(_io: IoServer, socket: IoClient, store: RoomStore): void {
   socket.on('doc:patch', (patch) => {
