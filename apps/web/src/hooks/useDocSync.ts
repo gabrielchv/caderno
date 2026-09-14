@@ -133,6 +133,10 @@ export function useDocSync(roomId: string): DocSync {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- identity is stable per session
   }, [roomId])
 
+  // Function declaration (not const) on purpose: it is referenced inside the
+  // `useEffect` above, and declarations hoist. Reads socketRef/sendingRef/
+  // pendingRef/versionRef so it always sees the latest values without being a
+  // dependency of the effect.
   function flushPending() {
     const socket = socketRef.current
     if (!socket || sendingRef.current) return
